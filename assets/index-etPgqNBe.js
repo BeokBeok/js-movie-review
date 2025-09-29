@@ -160,9 +160,9 @@ async function getPopularMovies(page = 1) {
 }
 addEventListener("load", async () => {
   const thumbnailList = document.querySelector("main .thumbnail-list");
-  thumbnailList.appendChild(createSkeleton());
   let popularMovieListData;
   try {
+    thumbnailList.appendChild(createSkeleton());
     popularMovieListData = await getPopularMovies();
   } catch (error) {
     removeSkeleton();
@@ -181,9 +181,9 @@ addEventListener("load", async () => {
   );
   moreButton.addEventListener("click", async () => {
     moreButton.disabled = true;
-    thumbnailList.appendChild(createSkeleton());
     let moreMovieListData;
     try {
+      thumbnailList.appendChild(createSkeleton());
       moreMovieListData = await getPopularMovies(pager.getNextPage());
     } catch (error) {
       removeSkeleton();
