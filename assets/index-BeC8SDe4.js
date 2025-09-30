@@ -35,17 +35,19 @@
     fetch(link.href, fetchOpts);
   }
 })();
-const BANNER_URL_PATH = "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/";
+const IMAGE_BASE_URLS = {
+  THUMBNAIL: "https://media.themoviedb.org/t/p/w440_and_h660_face/",
+  BANNER: "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/"
+};
 const updateBanner = (item) => {
   const backgroundContainer = document.querySelector("header .background-container");
-  backgroundContainer.style.backgroundImage = `url('${BANNER_URL_PATH}${item.poster_path}')`;
+  backgroundContainer.style.backgroundImage = `url('${IMAGE_BASE_URLS.BANNER}${item.poster_path}')`;
   const rate = document.querySelector("header .rate > span");
   rate.textContent = `${item.vote_average}`;
   const title = document.querySelector("header .top-rated-movie .title");
   title.textContent = `${item.title}`;
 };
 const starImage = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAxCAYAAACcXioiAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAQ4SURBVHgB7VlNctMwFP7UwrRl0/YGzgloNwyURd0TQE5AeoK2J2hyAuAEaU9QOEHMgvCzSW9QcwLChqbDNOI9RVEk106sWGZY5JvR+FlRJD29fxlYYYX/F/I79uQXxKgRAjWANh3Ro0ct0l0ptSPxQj2DYg31oIvZ5qHpLmpAcAno07+ZdWBIq+zoN5ZCgoCoQwLnhhK4oBUS8y7xGoFRhwT49CP9eqSfPb3aEBtoiH16BkJQCdDmW7AMl9VFq0w6GUCqdKvGBENoFXpj0R2LvjSUwCsERDAGtPHGVldiqBHeWf0xxwcEQkgJOMZr+3xxpHQ+Mb//CWfMIRmIDSUtlZlhplLrOJED41orIQgDecabHaP6pPY+E2OOEQChJFBkvC4E3lv0CQIgNw4o8Y6UiCNicQdjanxqQrVtQ0s9xk0bGkU5j+zR+E38tFa/1pF6aD1/GXrqfteJfkySzYkfImfjV8CS4mXjfY7jeUNkn+YXSxvxBR3Amc3II+fnEd4CS+tmQlH2bOGoO2JwC8umFS3aI8MckiuBPol3lnilqs3EyfjxQORjak/yxTsPStq/tYraKikMvY2pak769/SOhyTl3ek8j+aswb68g5qgGb4uM1Z+oxgzzg9+rheyvQTQll9xFcpfLwNeW9nMGG2r+4M9xmWAQ760BrCejjDQacI/hVqT1nYMXtDeMnYmCv7chp0asC2soymelRN5VcjPpC5ryhtGpnOMjnjpSEIhN5CR7reJNZvTCPckiT5OUTNIbU9oVwPYm5fkOnM2z5hb0OSeBNlGXcatjbVtdaX03qTNF0p+YUWWc8Mw1cXjUJWVchS3VPS7+s5RurnoJqNUSalSgI3MAnw6m9ivyoSO/lmVuaRgd1pm7lLJHOfz4gBNuIlaFKQ8HKlDicw7G+sBWmUPxisbVcYtrVixhqeojtiiO0XGWgT/dFqoED+BpNSiOlJrPu+g6c+AdEJ6gupIDLVEwe91L5S9dSOVqnyvpB3EjUkiN7Hr4xj8JBD+9CcFv7D8/MgvzfZjwBXxp0XDPa7XZ3NJvysXXxuILTopGsSbppRgwOkHvfb4unFBQpgYytMOSuuwo/+ZosKM4aB0R+mALMiZJGW7lLLnRddMMdUo+y3BRwKxtZEHuYlSFY6o9ualrtymEOq3nr6GcSGcOWOUhA8Dh5ht7KMhSTLUOFdy8yVWC4F91eBcdPGYLv2n66iVNSf95xAlsZwE9Gmp1FcqPY+tjQxpVk7C1Ccl3VqYFOKpNR/39UyKbktAlpeAjw1I65Xv/c+RFTWnGVuUbhf4cX3ibbgXYYxUzSlVBeZlBz4M9FCsmym147Kfj9Tt9P2DOiOLUgz4qFCnsJ/Tao9vX1ya0vjGnDnTsl7IL5XoU5Sc3GlGyhNR2Vn106lSK6lu66YBLEVNn2RrBZevqoRdYYUVvPAXJrOCc9SFL6sAAAAASUVORK5CYII=";
-const THUMBNAIL_URL_PATH = "https://media.themoviedb.org/t/p/w440_and_h660_face/";
 const createMovieItem = (item) => {
   const listItem = document.createElement("li");
   const itemContainer = createItemContainer({
@@ -61,7 +63,7 @@ const createItemContainer = ({ thumbnailPath, voteAverage, title }) => {
   itemContainer.className = "item";
   const thumbnail = document.createElement("img");
   thumbnail.className = "thumbnail";
-  thumbnail.src = `${THUMBNAIL_URL_PATH}${thumbnailPath}`;
+  thumbnail.src = `${IMAGE_BASE_URLS.THUMBNAIL}${thumbnailPath}`;
   const infoContainer = createInfoItem({
     voteAverage,
     title
@@ -110,7 +112,9 @@ const createSkeleton = (count = 20) => {
 const removeSkeleton = () => {
   document.querySelectorAll(".skeleton-item").forEach((item) => item.remove());
 };
-const ERROR_API_MESSAGE = "예상하지 못한 오류가 발생했습니다. 일시적인 현상이거나 네트워크 문제일 수 있으니, 잠시 후 다시 시도해주세요.";
+const ERROR_MESSAGES = {
+  API: "예상하지 못한 오류가 발생했습니다. 일시적인 현상이거나 네트워크 문제일 수 있으니, 잠시 후 다시 시도해주세요."
+};
 const BASE_URL = "https://api.themoviedb.org/3/";
 class ApiClient {
   static async get(endpoint, headers2 = {}) {
@@ -160,44 +164,20 @@ async function getPopularMovies(page = 1) {
 }
 addEventListener("load", async () => {
   const thumbnailList = document.querySelector("main .thumbnail-list");
-  thumbnailList.appendChild(createSkeleton());
-  let popularMovieListData;
-  try {
-    popularMovieListData = await getPopularMovies();
-  } catch (error) {
-    removeSkeleton();
-    alert(ERROR_API_MESSAGE);
-    return;
-  }
-  removeSkeleton();
-  updateBanner(popularMovieListData.results[0]);
-  const movieList = popularMovieListData.results;
-  const pager = createPager();
-  const popularMovieList = createMovieList(movieList);
   const moreButton = document.querySelector("main .more");
-  setVisibililty(
-    moreButton,
-    popularMovieListData.total_pages > pager.getPage()
-  );
-  moreButton.addEventListener("click", async () => {
-    moreButton.disabled = true;
-    thumbnailList.appendChild(createSkeleton());
-    let moreMovieListData;
-    try {
-      moreMovieListData = await getPopularMovies(pager.getNextPage());
-    } catch (error) {
-      removeSkeleton();
-      alert(ERROR_API_MESSAGE);
-      moreButton.disabled = false;
-      return;
-    }
-    removeSkeleton();
-    moreButton.disabled = false;
-    setVisibililty(moreButton, moreMovieListData.total_pages > pager.getPage());
-    const moreMovieList = createMovieList(moreMovieListData.results);
-    thumbnailList.appendChild(moreMovieList);
+  const pager = createPager();
+  loadPopularMovies({
+    container: thumbnailList,
+    page: pager.getPage(),
+    moreButton
   });
-  thumbnailList.appendChild(popularMovieList);
+  moreButton.addEventListener("click", () => {
+    handleMoreButtonClick({
+      container: thumbnailList,
+      page: pager.getNextPage(),
+      moreButton
+    });
+  });
 });
 const createPager = () => {
   let currentPage = 1;
@@ -209,3 +189,40 @@ const createPager = () => {
 const setVisibililty = (element, isVisible) => {
   element.classList.toggle("visible", isVisible);
 };
+const handleMoreButtonClick = async ({ container, page, moreButton }) => {
+  moreButton.disabled = true;
+  showSkeleton(container);
+  try {
+    const moreMovieListData = await getPopularMovies(page);
+    hideSkeleton();
+    moreButton.disabled = false;
+    setVisibililty(moreButton, moreMovieListData.total_pages > page);
+    const moreMovieList = createMovieList(moreMovieListData.results);
+    container.appendChild(moreMovieList);
+  } catch (error) {
+    hideSkeleton();
+    alert(ERROR_MESSAGES.API);
+    moreButton.disabled = false;
+    return;
+  }
+};
+const loadPopularMovies = async ({ container, page, moreButton }) => {
+  showSkeleton(container);
+  try {
+    const popularMovieListData = await getPopularMovies();
+    hideSkeleton();
+    updateBanner(popularMovieListData.results[0]);
+    setVisibililty(
+      moreButton,
+      popularMovieListData.total_pages > page
+    );
+    const popularMovieList = createMovieList(popularMovieListData.results);
+    container.appendChild(popularMovieList);
+  } catch (error) {
+    hideSkeleton();
+    alert(ERROR_MESSAGES.API);
+    return;
+  }
+};
+const showSkeleton = (container) => container.appendChild(createSkeleton());
+const hideSkeleton = () => removeSkeleton();
